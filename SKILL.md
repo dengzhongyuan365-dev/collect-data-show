@@ -176,8 +176,9 @@ Interactive Codex mode, default whenever Codex is in a conversation:
 
 - Read compact batches from `items.json`: `idx`, `title`, `author`, `summary`, `collections`, and old category.
 - Classify with the active assistant model in the conversation.
+- Use source-aware signals. For Bilibili videos, title, uploader, source folder, duration, and description are often more important than an old category. For Zhihu articles, title and excerpt are usually the strongest signals.
 - Write back `category`, `topic`, `concepts`, `readingPriority`, `reason`, `classificationConfidence`, and `classificationMethod: "codex-agent"`.
-- Run `refresh_zhihu_artifacts.py` after writing classifications.
+- Let `apply_agent_classification.py` refresh graph and Markdown artifacts after writing classifications.
 
 Use the helper scripts for the interactive loop:
 

@@ -39,6 +39,7 @@ def main():
         "totalItems": len(items),
         "start": args.start,
         "count": len(batch),
+        "classificationGuidance": build_guidance(batch),
         "classificationSchema": {
             "category": [
                 "AI 与技术",
@@ -80,13 +81,47 @@ def main():
 def compact_item(idx, item, summary_chars):
     return {
         "idx": idx,
+        "source": clean_text(item.get("source", "")),
+        "sourceType": clean_text(item.get("sourceType", "")),
         "title": clean_text(item.get("title", "")),
         "author": clean_text(item.get("author", "")),
         "summary": truncate(item.get("summary", ""), summary_chars),
         "collections": item.get("collections", []),
         "oldCategory": item.get("category", ""),
+        "oldTopic": item.get("topic", ""),
         "oldConcepts": item.get("concepts", []),
         "oldPriority": item.get("readingPriority", ""),
+        "duration": item.get("duration"),
+    }
+
+
+def build_guidance(batch):
+    sources = {item.get("source") for item in batch if item.get("source")}
+    if "bilibili" in sources:
+        return {
+            "mode": "video-favorites",
+            "rules": [
+                "这是 B 站视频收藏。主要根据标题、UP 主、简介和收藏夹判断分类。",
+                "技术教程、编程、操作系统、C/C++、Linux、AI、工具链归入 AI 与技术。",
+                "做菜、健身、身体健康、日常生活技能归入 生活与健康。",
+                "音乐、游戏、影视解说、搞笑娱乐归入 文艺与娱乐。",
+                "历史人物、古诗词、传统文化、社会制度史归入 历史与文化。",
+                "职场、面试、课程学习、学习方法归入 职业与教育。",
+                "焦虑、习惯、自我改变、人际关系归入 心理与成长。",
+                "分类要根据实际主题判断，不要被默认收藏夹名称误导。",
+            ],
+        }
+    if "zhihu" in sources:
+        return {
+            "mode": "article-favorites",
+            "rules": [
+                "这是知乎收藏。主要根据标题判断，摘要和收藏夹辅助。",
+                "技术文章出现历史、哲学、设计等词时，不要轻易改到历史文化或产品设计。",
+            ],
+        }
+    return {
+        "mode": "generic-items",
+        "rules": ["根据标题、摘要、来源集合和旧标签判断分类。"],
     }
 
 
