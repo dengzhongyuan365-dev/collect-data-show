@@ -56,7 +56,8 @@ Canonical item fields:
   "reason": "why this item is useful",
   "readingPriority": "精读/略读/待判断",
   "source": "zhihu/bilibili/douyin/...",
-  "sourceType": "article/video/bookmark/..."
+  "sourceType": "article/video/bookmark/...",
+  "cover": "optional image or video cover url"
 }
 ```
 
@@ -96,6 +97,31 @@ This main route performs the full pipeline:
 - generate the local dashboard
 
 The user has defined AI classification as part of this skill's job. Do not ask the user to specify the model. In an interactive Codex session, do not call a separate OpenAI API just to classify; use the active assistant model to classify batches, write the results back to `items.json`, then refresh the generated artifacts. For unattended command-line automation only, `classify_items_ai.py` can call the configured API when explicitly requested.
+
+### Bilibili Favorites
+
+Use this route when the user asks for:
+
+- 获取 B 站收藏
+- 整理 bilibili 收藏
+- 把 B 站收藏做成知识库
+- 展示 B 站收藏夹内容
+
+Run the Bilibili source adapter through the main runner:
+
+```bash
+python3 ~/.codex/skills/collect-data-show/scripts/run_collect_data_show.py bilibili --output-dir OUTPUT_DIR
+```
+
+The Bilibili adapter performs the same source pipeline as Zhihu:
+
+- open a dedicated browser profile
+- let the user manually log in or complete verification when needed
+- collect favorite folders and video metadata visible to the user
+- compile raw platform data into the shared `items.json` schema
+- generate the shared dashboard
+
+Do not download videos, comments, danmaku, or private content that the logged-in user cannot normally access. Keep Bilibili as a source adapter under this skill, not a separate skill.
 
 ### Existing Structured Data
 
@@ -232,6 +258,8 @@ Dot paths are supported, such as `owner.login`.
 
 - `scripts/collect_zhihu_favorites.py`: collect Zhihu favorites with a controlled browser session.
 - `scripts/compile_zhihu_favorites.py`: normalize Zhihu exports into `items.json`, `index.md`, `reading-plan.md`, and `graph.json`.
+- `scripts/collect_bilibili_favorites.py`: collect Bilibili favorite folders and video metadata with a controlled browser session.
+- `scripts/compile_bilibili_favorites.py`: normalize Bilibili exports into the shared item schema.
 - `scripts/export_agent_classification_batch.py`: export compact batches for the active Codex model to classify.
 - `scripts/apply_agent_classification.py`: apply Codex-agent classification updates and refresh artifacts.
 - `scripts/classify_items_ai.py`: use an OpenAI model to classify and enrich normalized items.

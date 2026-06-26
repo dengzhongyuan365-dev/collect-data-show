@@ -24,6 +24,7 @@ FIELD_CANDIDATES = {
     "priority": ["readingPriority", "priority", "rank", "level", "优先级"],
     "concepts": ["concepts", "tags", "topics", "keywords", "labels", "标签", "概念", "关键词"],
     "topic": ["topic", "topicName", "subject", "theme", "专题", "主题"],
+    "cover": ["cover", "thumbnail", "image", "pic", "poster", "封面", "图片"],
 }
 
 

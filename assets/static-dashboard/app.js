@@ -56,7 +56,8 @@ const DEFAULT_CONFIG = {
     reason: "reason",
     priority: "readingPriority",
     concepts: "concepts",
-    topic: "topic"
+    topic: "topic",
+    cover: "cover"
   },
   labels: {
     item: "条目",
@@ -141,6 +142,7 @@ function normalizeItem(item) {
   const title = cleanText(getPath(item, fields.title) || "未命名条目");
   const url = cleanText(getPath(item, fields.url) || getPath(item, fields.id) || "");
   const summary = decodeHtml(cleanText(getPath(item, fields.summary) || getPath(item, "description") || getPath(item, "excerpt") || ""));
+  const cover = normalizeAssetUrl(cleanText(getPath(item, fields.cover) || ""));
   return {
     id: getPath(item, fields.id) || url || title,
     title,
@@ -149,6 +151,7 @@ function normalizeItem(item) {
     category: cleanText(getPath(item, fields.category) || "未分类"),
     collections,
     summary,
+    cover,
     reason: cleanText(getPath(item, fields.reason) || ""),
     readingPriority: cleanText(getPath(item, fields.priority) || "待判断"),
     concepts,
@@ -361,6 +364,21 @@ function createItemCard(item) {
   open.addEventListener("click", (event) => event.stopPropagation());
   footer.append(concepts, open);
 
+  if (item.cover) {
+    const coverLink = document.createElement("a");
+    coverLink.className = "item-cover";
+    coverLink.href = item.url;
+    coverLink.target = "_blank";
+    coverLink.rel = "noreferrer";
+    coverLink.addEventListener("click", (event) => event.stopPropagation());
+    const image = document.createElement("img");
+    image.src = item.cover;
+    image.alt = item.title;
+    image.loading = "lazy";
+    coverLink.appendChild(image);
+    card.appendChild(coverLink);
+  }
+
   card.append(title, meta, summary, footer);
   return card;
 }
@@ -397,6 +415,14 @@ function renderDetail() {
   open.target = "_blank";
   open.rel = "noreferrer";
   open.textContent = state.config.labels.openOriginal;
+
+  if (item.cover) {
+    const cover = document.createElement("img");
+    cover.className = "detail-cover";
+    cover.src = item.cover;
+    cover.alt = item.title;
+    elements.detailPane.appendChild(cover);
+  }
 
   const concepts = createDetailSection(state.config.labels.concept, item.concepts.length ? item.concepts.join("、") : `暂无${state.config.labels.concept}`);
   const collections = createDetailSection(state.config.labels.source, item.collections.length ? item.collections.join("、") : "未知");
@@ -579,6 +605,14 @@ function decodeHtml(text) {
   const textarea = document.createElement("textarea");
   textarea.innerHTML = text;
   return textarea.value;
+}
+
+function normalizeAssetUrl(url) {
+  const text = cleanText(url);
+  if (text.startsWith("//")) {
+    return `https:${text}`;
+  }
+  return text;
 }
 
 function getPath(object, path) {

@@ -3,9 +3,6 @@ import argparse
 import json
 from pathlib import Path
 
-from compile_zhihu_favorites import build_graph, write_index, write_reading_plan
-
-
 CATEGORIES = {
     "AI 与技术",
     "软件与工具",
@@ -80,6 +77,11 @@ def validate_update(update, total):
 
 
 def refresh_artifacts(items_path, items):
+    if any(item.get("source") == "bilibili" for item in items):
+        from compile_bilibili_favorites import build_graph, write_index, write_reading_plan
+    else:
+        from compile_zhihu_favorites import build_graph, write_index, write_reading_plan
+
     output_dir = items_path.parent
     graph = build_graph(items)
     (output_dir / "graph.json").write_text(json.dumps(graph, ensure_ascii=False, indent=2), encoding="utf-8")

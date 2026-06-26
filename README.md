@@ -5,6 +5,7 @@ A Codex skill for collecting user-owned data, compiling it into a local knowledg
 Current workflows include:
 
 - Zhihu favorites collection through a user-controlled browser session.
+- Bilibili favorites collection through a user-controlled browser session.
 - Normalization into `items.json`, `graph.json`, `index.md`, and `reading-plan.md`.
 - Interactive Codex-agent classification for categories, topics, concepts, and reading priority.
 - Static dashboard generation for JSON/CSV/Markdown data.
@@ -26,6 +27,12 @@ Then invoke it naturally in Codex, for example:
 
 ```text
 使用 collect-data-show，整理知乎收藏并展示。
+```
+
+or:
+
+```text
+使用 collect-data-show，整理 B 站收藏并展示。
 ```
 
 ## Privacy

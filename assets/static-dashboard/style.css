@@ -452,6 +452,22 @@ button:active {
   box-shadow: 0 0 0 3px rgba(14, 124, 102, 0.14), var(--shadow-md);
 }
 
+.item-cover {
+  display: block;
+  overflow: hidden;
+  border: 1px solid #edf1f6;
+  border-radius: 8px;
+  background: var(--surface-2);
+  aspect-ratio: 16 / 9;
+}
+
+.item-cover img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
 .item-title {
   display: -webkit-box;
   overflow: hidden;
@@ -552,6 +568,17 @@ button:active {
   font-size: 21px;
   font-weight: 860;
   line-height: 1.42;
+}
+
+.detail-cover {
+  display: block;
+  width: 100%;
+  border: 1px solid #edf1f6;
+  border-radius: 8px;
+  background: var(--surface-2);
+  margin-bottom: 14px;
+  aspect-ratio: 16 / 9;
+  object-fit: cover;
 }
 
 .detail-section {

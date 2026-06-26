@@ -232,7 +232,10 @@ def refresh_compiled_artifacts(output_path, items):
     if output_path.name != "items.json":
         return
     try:
-        from compile_zhihu_favorites import build_graph, write_index, write_reading_plan
+        if any(item.get("source") == "bilibili" for item in items):
+            from compile_bilibili_favorites import build_graph, write_index, write_reading_plan
+        else:
+            from compile_zhihu_favorites import build_graph, write_index, write_reading_plan
     except Exception as error:
         print(f"Skipped refreshing companion artifacts: {error}")
         return
