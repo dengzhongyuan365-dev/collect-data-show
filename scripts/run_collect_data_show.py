@@ -7,6 +7,7 @@ from pathlib import Path
 
 
 SCRIPT_DIR = Path(__file__).resolve().parent
+DEFAULT_VENV = Path("~/.local/share/collect-data-show-venv").expanduser()
 DEFAULT_ZHIHU_OUTPUT_DIR = Path("~/Documents/zhihu-knowledge").expanduser()
 DEFAULT_ZHIHU_RAW_OUTPUT = Path("~/Documents/zhihu-favorites.json").expanduser()
 DEFAULT_BILIBILI_OUTPUT_DIR = Path("~/Documents/bilibili-knowledge").expanduser()
@@ -78,6 +79,7 @@ def run_source(args, collect_script, compile_script, refresh_hint):
                 output_dir,
             ])
     else:
+        collect_python = ensure_playwright_python()
         collect_command = [
             SCRIPT_DIR / collect_script,
             "--output",
@@ -90,7 +92,7 @@ def run_source(args, collect_script, compile_script, refresh_hint):
             collect_command.append("--headless")
         if args.channel:
             collect_command.extend(["--channel", args.channel])
-        run(collect_command)
+        run(collect_command, python=collect_python)
 
     if not items_path.exists():
         raise SystemExit(f"Compilation did not produce items.json: {items_path}")
@@ -128,12 +130,41 @@ def run_source(args, collect_script, compile_script, refresh_hint):
         print(f"Dashboard file: {output_dir / 'index.html'}")
 
 
-def run(command):
+def run(command, python=None):
     printable = " ".join(str(part) for part in command)
     print(f"\n$ {printable}")
-    process = subprocess.run([sys.executable, *map(str, command)], check=False)
+    process = subprocess.run([python or sys.executable, *map(str, command)], check=False)
     if process.returncode != 0:
         raise SystemExit(process.returncode)
+
+
+def ensure_playwright_python():
+    if python_has_playwright(sys.executable):
+        return sys.executable
+
+    venv_python = DEFAULT_VENV / "bin" / "python"
+    if not venv_python.exists():
+        print(f"Creating browser runtime venv: {DEFAULT_VENV}")
+        subprocess.run([sys.executable, "-m", "venv", str(DEFAULT_VENV)], check=True)
+
+    if not python_has_playwright(venv_python):
+        print("Installing Playwright into browser runtime venv...")
+        subprocess.run([str(venv_python), "-m", "pip", "install", "--upgrade", "pip"], check=True)
+        subprocess.run([str(venv_python), "-m", "pip", "install", "playwright"], check=True)
+
+    print("Ensuring Playwright Chromium runtime...")
+    subprocess.run([str(venv_python), "-m", "playwright", "install", "chromium"], check=True)
+    return str(venv_python)
+
+
+def python_has_playwright(python):
+    result = subprocess.run(
+        [str(python), "-c", "import playwright"],
+        check=False,
+        stdout=subprocess.DEVNULL,
+        stderr=subprocess.DEVNULL,
+    )
+    return result.returncode == 0
 
 
 def first_free_port(start):
