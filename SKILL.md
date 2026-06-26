@@ -19,6 +19,12 @@ Keep source-specific logic inside scripts and routing rules. Do not expose separ
 
 Do not require the user to mention which model performs classification. In interactive Codex sessions, the active assistant model is the default classifier. The user-facing request should stay natural, such as "整理知乎收藏并展示" or "继续处理这个知识库".
 
+Do not tell the user to run internal Python scripts as the primary usage path. The scripts are implementation details for Codex to execute. User-facing instructions should be natural skill requests, such as:
+
+- `使用 collect-data-show，整理知乎收藏并展示。`
+- `使用 collect-data-show，整理 B 站收藏并展示。`
+- `使用 collect-data-show，继续处理这个知识库。`
+
 ## Architecture
 
 `collect-data-show` is the only user-facing skill. Individual platforms are internal source adapters, not separate skills.
