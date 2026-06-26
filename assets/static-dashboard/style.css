@@ -286,7 +286,7 @@ button:active {
 
 .stats {
   display: grid;
-  grid-template-columns: repeat(4, minmax(0, 1fr));
+  grid-template-columns: repeat(5, minmax(0, 1fr));
   gap: 10px;
   margin-bottom: 12px;
 }
@@ -320,6 +320,10 @@ button:active {
 }
 
 .stats article:nth-child(4)::before {
+  background: var(--purple);
+}
+
+.stats article:nth-child(5)::before {
   background: var(--rose);
 }
 
@@ -516,6 +520,18 @@ button:active {
   border-color: #f4d2a8;
   background: var(--amber-soft);
   color: var(--amber);
+}
+
+.badge.agent-classified {
+  border-color: #d7c9ff;
+  background: var(--purple-soft);
+  color: var(--purple);
+}
+
+.badge.agent-pending {
+  border-color: #d8ded7;
+  background: var(--surface-3);
+  color: var(--muted);
 }
 
 .summary {

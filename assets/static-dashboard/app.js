@@ -24,6 +24,7 @@ const elements = {
   totalCount: document.querySelector("#totalCount"),
   categoryCount: document.querySelector("#categoryCount"),
   conceptCount: document.querySelector("#conceptCount"),
+  agentCount: document.querySelector("#agentCount"),
   filteredCount: document.querySelector("#filteredCount"),
   searchInput: document.querySelector("#searchInput"),
   priorityFilter: document.querySelector("#priorityFilter"),
@@ -57,7 +58,8 @@ const DEFAULT_CONFIG = {
     priority: "readingPriority",
     concepts: "concepts",
     topic: "topic",
-    cover: "cover"
+    cover: "cover",
+    classificationMethod: "classificationMethod"
   },
   labels: {
     item: "条目",
@@ -154,6 +156,8 @@ function normalizeItem(item) {
     cover,
     reason: cleanText(getPath(item, fields.reason) || ""),
     readingPriority: cleanText(getPath(item, fields.priority) || "待判断"),
+    classificationMethod: cleanText(getPath(item, fields.classificationMethod) || ""),
+    classificationConfidence: getPath(item, "classificationConfidence"),
     concepts,
     topic: cleanText(getPath(item, fields.topic) || "") || inferTopic({ ...item, title, summary, category: getPath(item, fields.category) }, concepts)
   };
@@ -194,6 +198,7 @@ function renderStats() {
   elements.totalCount.textContent = String(state.items.length);
   elements.categoryCount.textContent = String(groupCount(state.items, "category").length);
   elements.conceptCount.textContent = String(getConceptCounts(state.items).length);
+  elements.agentCount.textContent = String(state.items.filter(isAgentClassified).length);
 }
 
 function renderCategoryNav() {
@@ -258,7 +263,8 @@ function buildViewTitle() {
 }
 
 function buildViewSubtitle(items) {
-  const parts = [`当前 ${items.length} ${state.config.labels.item}`];
+  const classifiedCount = items.filter(isAgentClassified).length;
+  const parts = [`当前 ${items.length} ${state.config.labels.item}`, `Codex 分类 ${classifiedCount}`];
   if (state.priority) {
     parts.push(`优先级：${state.priority}`);
   }
@@ -339,6 +345,7 @@ function createItemCard(item) {
   meta.className = "meta";
   meta.appendChild(createBadge(item.category, "category"));
   meta.appendChild(createBadge(item.readingPriority, priorityClass(item.readingPriority)));
+  meta.appendChild(createBadge(classificationLabel(item), isAgentClassified(item) ? "agent-classified" : "agent-pending"));
   if (item.topic) {
     meta.appendChild(createBadge(item.topic));
   }
@@ -406,6 +413,7 @@ function renderDetail() {
   meta.className = "meta detail-section";
   meta.appendChild(createBadge(item.category, "category"));
   meta.appendChild(createBadge(item.readingPriority, priorityClass(item.readingPriority)));
+  meta.appendChild(createBadge(classificationLabel(item), isAgentClassified(item) ? "agent-classified" : "agent-pending"));
   if (item.author) {
     meta.appendChild(createBadge(item.author));
   }
@@ -534,6 +542,20 @@ function priorityClass(priority) {
     return "priority-normal";
   }
   return "";
+}
+
+function isAgentClassified(item) {
+  return item.classificationMethod === "codex-agent" || item.classificationMethod === "ai";
+}
+
+function classificationLabel(item) {
+  if (item.classificationMethod === "codex-agent") {
+    return "Codex 分类";
+  }
+  if (item.classificationMethod === "ai") {
+    return "AI 分类";
+  }
+  return "待分类";
 }
 
 function exportCurrentMarkdown() {
