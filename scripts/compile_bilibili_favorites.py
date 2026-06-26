@@ -73,6 +73,8 @@ def normalize_cover(value):
     text = clean_text(value)
     if text.startswith("//"):
         return f"https:{text}"
+    if re.match(r"^http://i\d\.hdslb\.com/", text):
+        return re.sub(r"^http:", "https:", text)
     return text
 
 

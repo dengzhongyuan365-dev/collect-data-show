@@ -375,6 +375,7 @@ function createItemCard(item) {
     image.src = item.cover;
     image.alt = item.title;
     image.loading = "lazy";
+    image.referrerPolicy = "no-referrer";
     coverLink.appendChild(image);
     card.appendChild(coverLink);
   }
@@ -421,6 +422,7 @@ function renderDetail() {
     cover.className = "detail-cover";
     cover.src = item.cover;
     cover.alt = item.title;
+    cover.referrerPolicy = "no-referrer";
     elements.detailPane.appendChild(cover);
   }
 
@@ -611,6 +613,9 @@ function normalizeAssetUrl(url) {
   const text = cleanText(url);
   if (text.startsWith("//")) {
     return `https:${text}`;
+  }
+  if (/^http:\/\/i\d\.hdslb\.com\//.test(text)) {
+    return text.replace(/^http:/, "https:");
   }
   return text;
 }
