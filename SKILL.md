@@ -19,6 +19,47 @@ Keep source-specific logic inside scripts and routing rules. Do not expose separ
 
 Do not require the user to mention which model performs classification. In interactive Codex sessions, the active assistant model is the default classifier. The user-facing request should stay natural, such as "整理知乎收藏并展示" or "继续处理这个知识库".
 
+## Architecture
+
+`collect-data-show` is the only user-facing skill. Individual platforms are internal source adapters, not separate skills.
+
+Pipeline:
+
+1. Source adapter collects user-owned data from one platform.
+2. Source compiler normalizes raw platform data into the shared `items.json` schema.
+3. Codex-agent classification enriches the normalized items.
+4. The shared dashboard generator renders the result.
+
+Examples of source adapters:
+
+- Zhihu favorites
+- Bilibili favorites
+- Douyin favorites
+- Browser bookmarks
+- Existing JSON/CSV/Markdown files
+
+Do not create separate skills such as `zhihu-collector` or `bilibili-collector`. Add platform capabilities under this skill and keep their output compatible with the shared viewer.
+
+Canonical item fields:
+
+```json
+{
+  "id": "stable source id or url",
+  "title": "item title",
+  "url": "source link",
+  "author": "creator/author/uploader",
+  "category": "high-level classification",
+  "topic": "specific topic",
+  "concepts": ["tags", "concepts"],
+  "collections": ["source folder names"],
+  "summary": "excerpt or generated summary",
+  "reason": "why this item is useful",
+  "readingPriority": "精读/略读/待判断",
+  "source": "zhihu/bilibili/douyin/...",
+  "sourceType": "article/video/bookmark/..."
+}
+```
+
 ## Routing
 
 ### Zhihu Favorites

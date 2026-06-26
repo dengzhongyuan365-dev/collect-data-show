@@ -9,6 +9,8 @@ Current workflows include:
 - Interactive Codex-agent classification for categories, topics, concepts, and reading priority.
 - Static dashboard generation for JSON/CSV/Markdown data.
 
+The intended architecture is one main skill with multiple internal source adapters. Zhihu, Bilibili, Douyin, browser bookmarks, and existing files should all compile into the same item schema, then reuse the same classification and dashboard pipeline.
+
 This repository contains only the reusable skill, scripts, and dashboard template. Personal exports and generated knowledge libraries should be stored in a separate private repository.
 
 ## Install
