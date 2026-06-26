@@ -1,0 +1,13 @@
+__pycache__/
+*.py[cod]
+*.pyo
+.DS_Store
+.env
+*.log
+
+# User data should live in a private repository, not in the public skill repo.
+zhihu-favorites.json
+zhihu-knowledge/
+items.json
+graph.json
+reading-plan.md

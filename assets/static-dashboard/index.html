@@ -1,0 +1,91 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>数据展示工作台</title>
+    <link rel="stylesheet" href="./style.css">
+  </head>
+  <body>
+    <div class="shell">
+      <aside class="sidebar">
+        <div class="brand">
+          <h1 id="appName">数据展示工作台</h1>
+          <p id="appDescription">把结构化数据变成可以浏览、搜索和导出的资料库</p>
+        </div>
+
+        <section class="panel">
+          <div class="panel-title">分类</div>
+          <nav id="categoryNav" class="nav-list"></nav>
+        </section>
+
+        <section class="panel">
+          <div class="panel-title">高频概念</div>
+          <div id="conceptCloud" class="concept-cloud"></div>
+        </section>
+      </aside>
+
+      <main class="main">
+        <header class="topbar">
+          <div>
+            <div id="viewTitle" class="view-title">全部收藏</div>
+            <div id="viewSubtitle" class="view-subtitle">正在加载数据...</div>
+          </div>
+          <div class="actions">
+            <button id="exportMarkdown" type="button">导出当前列表</button>
+          </div>
+        </header>
+
+        <section class="stats">
+          <article>
+            <strong id="totalCount">0</strong>
+            <span>收藏</span>
+          </article>
+          <article>
+            <strong id="categoryCount">0</strong>
+            <span>分类</span>
+          </article>
+          <article>
+            <strong id="conceptCount">0</strong>
+            <span>概念</span>
+          </article>
+          <article>
+            <strong id="filteredCount">0</strong>
+            <span>当前结果</span>
+          </article>
+        </section>
+
+        <section class="controls">
+          <input id="searchInput" type="search" placeholder="搜索标题、作者、摘要、概念">
+          <select id="priorityFilter" aria-label="阅读优先级">
+            <option value="">全部优先级</option>
+            <option value="精读">精读</option>
+            <option value="略读">略读</option>
+            <option value="待判断">待判断</option>
+          </select>
+          <select id="sortSelect" aria-label="排序">
+            <option value="priority">按优先级</option>
+            <option value="title">按标题</option>
+            <option value="author">按作者</option>
+          </select>
+        </section>
+
+        <section class="workspace">
+          <section class="content">
+            <div id="topicStrip" class="topic-strip"></div>
+            <div id="itemList" class="item-list"></div>
+          </section>
+
+          <aside id="detailPane" class="detail-pane">
+            <div class="empty-detail">
+              <strong>选择一篇收藏</strong>
+              <span>这里会显示摘要、概念和原文链接。</span>
+            </div>
+          </aside>
+        </section>
+      </main>
+    </div>
+
+    <script src="./app.js?v=topic-filter-20260626"></script>
+  </body>
+</html>

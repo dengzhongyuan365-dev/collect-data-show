@@ -1,0 +1,4 @@
+interface:
+  display_name: "Collect Data Show"
+  short_description: "Collect, compile, and visualize structured data"
+  default_prompt: "Collect this data source and generate a local visual dashboard."
